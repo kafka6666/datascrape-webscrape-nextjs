@@ -39,7 +39,7 @@ export const scrapeAndStoreData = async (productUrl: string) => {
                 {upsert: true, new: true}
             )
 
-            revalidatePath(`/products/${newData._id}`)
+            revalidatePath(``)
 
             console.log(newData);
             return newData;

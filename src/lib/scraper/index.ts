@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { extractPrice } from '@/lib/utils';
+import {extractCurrency, extractDescription, extractPrice} from '@/lib/utils';
 
 export const scrapeUrlData = async (url: string) => {
   if (!url) return;
@@ -62,10 +62,10 @@ export const scrapeUrlData = async (url: string) => {
     const currency = extractCurrency($('.a-price-symbol'));
     const discountRate = $('.savingsPercentage').text().replace(/[-%]/g, '');
 
-    const description = extractDescription($);
+    const description = extractDescription(response);
 
     // Construct data object with scraped information
-    const data = {
+    return  {
       url,
       currency: currency || '$',
       image: imageUrls[0],
@@ -84,7 +84,7 @@ export const scrapeUrlData = async (url: string) => {
       averagePrice: Number(currentPrice) || Number(originalPrice),
     };
 
-    return data;
+
   } catch (error) {
     throw new Error(`Failed to scrape data: ${error}`);
   }

@@ -47,7 +47,9 @@ export const extractDescription = (response: AxiosResponse<string>): string => {
 
     if (elements.length > 0) {
       const textContent = elements
-          .map((_, element) => $(element).text().trim())
+          .map(function(_: number, element: cheerio.Element): string {
+            return $(element).text().trim();
+          })
           .get()
           .join("\n");
       return textContent;
