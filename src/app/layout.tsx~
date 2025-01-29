@@ -14,7 +14,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Data Scrape',
+  title: 'Pricewise',
   description: 'A web Scraper for price comparison',
 };
 
