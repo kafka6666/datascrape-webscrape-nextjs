@@ -2,7 +2,7 @@
 
 import {scrapeUrlData} from "@/lib/scraper";
 import {connectToDb} from "@/lib/mongoose";
-import {Product} from "@/lib/models/product.model";
+import {Product, ProductDocument} from "@/lib/models/product.model";
 import {getAveragePrice, getHighestPrice, getLowestPrice} from "@/lib/utils";
 import {revalidatePath} from "next/cache";
 
@@ -15,14 +15,19 @@ export const scrapeAndStoreData = async (productUrl: string) => {
         const scrapedData = await scrapeUrlData(productUrl);
         console.log(scrapedData);
 
+        // if scraped data is undefined, return an error
+        if (!scrapedData?.currentPrice) {
+            return new Error('Current price is undefined');
+        }
+
         let data = scrapedData
 
-        const existingData = await Product.findOne({url: scrapedData?.url});
+        const existingData = await Product.findOne({url: scrapedData?.url}) as ProductDocument;
 
         if (existingData) {
             const updatedPriceHistory = [
                 ...existingData.priceHistory,
-                {price: scrapedData?.currentPrice}
+                {price: scrapedData.currentPrice, date: new Date()}
             ]
 
             data = {

@@ -46,11 +46,11 @@ export const extractDescription = (response: AxiosResponse<string>): string => {
     const elements = $(selector);
 
     if (elements.length > 0) {
-      const textContent = elements
+      return elements
           .map((_, element) => $(element).text().trim())
           .get()
           .join("\n");
-      return textContent;
+
     }
   }
 
@@ -83,9 +83,7 @@ export function getLowestPrice(priceList: PriceHistoryItem[]): number {
 
 export function getAveragePrice(priceList: PriceHistoryItem[]): number {
   const sumOfPrices = priceList.reduce((acc, curr) => acc + curr.price, 0);
-  const averagePrice = sumOfPrices / priceList.length || 0;
-
-  return averagePrice;
+  return sumOfPrices / priceList.length || 0;
 }
 
 export const formatNumber = (num: number = 0): string => {

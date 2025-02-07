@@ -1,6 +1,19 @@
-import {model, models, Schema} from "mongoose";
+import {model, models, Schema, Document} from "mongoose";
 
-const productSchema = new Schema({
+export interface PriceHistory{
+    price: number;
+    date: Date;
+}
+
+export interface ProductDocument extends Document {
+    url: string;
+    priceHistory: PriceHistory[];
+    lowestPrice: number;
+    highestPrice: number;
+    averagePrice: number;
+}
+
+const ProductSchema = new Schema({
     url: {
         type: String,
         required: true,
@@ -49,4 +62,4 @@ const productSchema = new Schema({
 }, {timestamps: true}
 );
 
-export const Product = models.Product || model('Product', productSchema)
+export const Product = models.Product || model('Product', ProductSchema)

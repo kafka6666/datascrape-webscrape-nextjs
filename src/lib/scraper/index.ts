@@ -1,6 +1,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import {extractCurrency, extractDescription, extractPrice} from '@/lib/utils';
+import {PriceHistory} from "@/lib/models/product.model";
 
 export const scrapeUrlData = async (url: string) => {
   if (!url) return;
@@ -72,7 +73,7 @@ export const scrapeUrlData = async (url: string) => {
       title,
       currentPrice: Number(currentPrice) || Number(originalPrice),
       originalPrice: Number(originalPrice) || Number(currentPrice),
-      priceHistory: [],
+      priceHistory: [] as PriceHistory[],
       discountRate: Number(discountRate),
       category: 'category',
       reviewsCount: 100,
