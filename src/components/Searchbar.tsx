@@ -11,12 +11,10 @@ const isValidUrl = (url: string): boolean | undefined => {
        const hostname = parsedUrl.hostname
 
        // check if the hostname contains "https://", "www.", or ".com"
-       if (hostname.includes("https://") || hostname.includes("www.") ||
-           hostname.endsWith(".com")) {
-           return true
-           }
+       return hostname.includes("https://") || hostname.includes("www.") ||
+           hostname.endsWith(".com");
 
-       return false
+
 
    } catch (error) {
        console.log(error)
@@ -39,7 +37,7 @@ const Searchbar = () => {
         try {
             setIsLoading(true)
             // scrape the product page
-            const scrapedData = await scrapeAndStoreData(searchPrompt)
+            const scrapedData = await scrapeAndStoreData(searchPrompt);
             console.log(scrapedData);
 
         } catch (error) {

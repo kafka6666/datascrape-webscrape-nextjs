@@ -13,22 +13,25 @@ export const scrapeAndStoreData = async (productUrl: string) => {
         // connect to database
         await connectToDb();
         const scrapedData = await scrapeUrlData(productUrl);
-        console.log(scrapedData);
+
 
         // if scraped data is undefined, return an error
+        if (!scrapedData) return new Error('Scraped data is undefined');
         if (!scrapedData?.currentPrice) {
             return new Error('Current price is undefined');
         }
 
         let data = scrapedData
 
-        const existingData = await Product.findOne({url: scrapedData?.url}) as ProductDocument;
+        const existingData = await Product.findOne({url: scrapedData.url}) as ProductDocument;
+        console.log(existingData);
 
         if (existingData) {
             const updatedPriceHistory = [
                 ...existingData.priceHistory,
                 {price: scrapedData.currentPrice, date: new Date()}
             ]
+
 
             data = {
                 ...scrapedData,
@@ -37,21 +40,19 @@ export const scrapeAndStoreData = async (productUrl: string) => {
                 highestPrice: getHighestPrice(updatedPriceHistory),
                 averagePrice: getAveragePrice(updatedPriceHistory)
             }
-
-            const newData = await Product.findOneAndUpdate(
-                {url: scrapedData?.url},
-                data,
-                {upsert: true, new: true}
-            )
-
-            revalidatePath(`/products/${newData._id}`)
-
-            console.log(newData);
-            return newData;
         }
 
-        if (!scrapedData) return;
-        // return scrapedData;
+        const newData = await Product.findOneAndUpdate(
+            {url: scrapedData.url},
+            data,
+            {upsert: true, new: true}
+        )
+
+        revalidatePath(`/products/${newData._id}`)
+
+        console.log(newData);
+        // return newData;
+
     } catch (error) {
         throw new Error(`Failed to create/update data: ${error}`);
     }
