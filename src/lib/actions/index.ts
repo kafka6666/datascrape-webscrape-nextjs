@@ -58,3 +58,48 @@ export const scrapeAndStoreData = async (productUrl: string) => {
     }
 
 }
+
+export const getDataById = async (productId: string) => {
+    try {
+        await connectToDb();
+
+        // find data by id
+        const data = await Product.findOne({_id: productId});
+        if (!data) return null;
+        return data;
+    } catch (error) {
+        console.log(error);
+        throw new Error(`Failed to get data: ${error}`);
+    }
+}
+
+export const getAllData = async () => {
+    try {
+        await connectToDb();
+
+        // find all data
+        const data = await Product.find();
+        if (!data) return null;
+        return data;
+    } catch (error) {
+        console.log(error);
+        throw new Error(`Failed to get all data: ${error}`);
+    }
+}
+
+export const getSimilarData = async (productId: string) => {
+    try {
+        await connectToDb();
+
+        // find data by id
+        const currentData = await Product.findById(productId);
+        if (!currentData) return null;
+
+        return await Product.find({
+            _id: {$ne: productId},
+        }).limit(3);
+    } catch (error) {
+        console.log(error);
+        throw new Error(`Failed to get the similar data: ${error}`);
+    }
+}

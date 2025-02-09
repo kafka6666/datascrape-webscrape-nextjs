@@ -6,10 +6,10 @@ const nextConfig: NextConfig = {
     serverActions: {
       enabled: true,
     } as never,
-    serverComponentsExternalPackages: ['mongoose'],
   },
+    serverExternalPackages: ['mongoose'],
   images: {
-    // domains: ['m.media-amazon.com']
+    remotePatterns: [{hostname: 'm.media-amazon.com'}]
   },
 };
 

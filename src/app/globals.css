@@ -11,7 +11,7 @@
 
 @layer utilities {
   .btn {
-    @apply py-4 px-4 bg-secondary hover:bg-opacity-70 rounded-[30px] text-white text-lg font-semibold;
+    @apply py-4 px-4 bg-red-500 hover:bg-opacity-70 rounded-[30px] text-white text-lg font-semibold;
   }
 
   .head-text {
@@ -34,7 +34,7 @@
 
 @layer utilities {
   .btn {
-    @apply py-4 px-4 bg-secondary hover:bg-opacity-70 rounded-[30px] text-white text-lg font-semibold;
+    @apply py-4 px-4 bg-red-300 hover:bg-opacity-70 rounded-[30px] text-white text-lg font-semibold;
   }
 
   .head-text {
@@ -99,7 +99,7 @@
   }
 
   .product-reviews {
-    @apply flex items-center gap-2 px-3 py-2 bg-white-200 rounded-[27px];
+    @apply flex items-center gap-2 px-3 py-2 bg-white rounded-[27px];
   }
 
   /* MODAL */
@@ -124,7 +124,7 @@
   }
 
   .dialog-btn {
-    @apply px-5 py-3 text-white text-base font-semibold border border-secondary bg-secondary rounded-lg mt-8;
+    @apply px-5 py-3 text-white text-base font-semibold border border-secondary bg-red-400 rounded-lg mt-8;
   }
 
   /* NAVBAR */
@@ -138,7 +138,7 @@
 
   /* PRICE INFO */
   .price-info_card {
-    @apply flex-1 min-w-[200px] flex flex-col gap-2 border-l-[3px] rounded-10 bg-white-100 px-5 py-4;
+    @apply flex-1 min-w-[200px] flex flex-col gap-2 border-l-[3px] rounded-10 bg-white px-5 py-4;
   }
 
   /* PRODUCT CARD */
