@@ -3,6 +3,7 @@ import Searchbar from "@/components/Searchbar";
 import HeroCarousel from "@/components/HeroCarousel";
 import {getAllData} from "@/lib/actions";
 import ProductCard from "@/components/ProductCard";
+import ImageScraper from "@/components/ImageScraper";
 
 export default async function Home() {
 
@@ -27,6 +28,7 @@ export default async function Home() {
                         Powerful, self-serve product and growth analytics to help you convert, engage, and retain more.
                     </p>
                     <Searchbar />
+                    <ImageScraper />
                 </div>
                 <HeroCarousel />
             </div>

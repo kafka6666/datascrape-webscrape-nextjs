@@ -2,16 +2,16 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import {extractCurrency, extractDescription, extractPrice} from '@/lib/utils';
 import {PriceHistory} from "@/lib/models/product.model";
+import * as fs from 'fs';
+import * as path from 'path';
 
-export const scrapeUrlData = async (url: string) => {
-  if (!url) return;
-
-  // BrightData proxy configuration
+// BrightData proxy configuration
   const username = String(process.env.BRIGHT_DATA_USERNAME);
   const password = String(process.env.BRIGHT_DATA_PASSWORD);
   const port = 33335;
   const sessionId = (1000000 * Math.random()) | 0;
 
+  // create a new axios instance with the proxy configuration
   const options = {
     proxy: {
       host: 'brd.superproxy.io',
@@ -27,6 +27,9 @@ export const scrapeUrlData = async (url: string) => {
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
     },
   };
+
+export const scrapeUrlData = async (url: string) => {
+  if (!url) return;
 
   try {
     const response = await axios.get(url, options);
@@ -90,3 +93,69 @@ export const scrapeUrlData = async (url: string) => {
     throw new Error(`Failed to scrape data: ${error}`);
   }
 };
+
+interface ImageData {
+  url: string;
+  alt: string;
+  filename: string;
+}
+
+
+export async function scrapeImages(url: string, selector: string, outputDir: string): Promise<ImageData[]> {
+  try {
+    // Create output directory if it doesn't exist
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+
+    // Fetch the webpage
+    const response = await axios.get(url, options);
+    const $ = cheerio.load(response.data);
+    const images: ImageData[] = [];
+
+    // Find all images matching the selector
+    $(selector).each((_, element) => {
+      const imgUrl = $(element).attr('src');
+      const altText = $(element).attr('alt') || 'unnamed-image';
+      
+      if (imgUrl) {
+        // Clean the URL if it's relative
+        const absoluteUrl = imgUrl.startsWith('http') ? imgUrl : new URL(imgUrl, url).toString();
+        const filename = `${altText.toLowerCase().replace(/[^a-z0-9]/g, '-')}-${Date.now()}.jpg`;
+        
+        images.push({
+          url: absoluteUrl,
+          alt: altText,
+          filename
+        });
+      }
+    });
+
+    // Download all images
+    const downloadPromises = images.map(async (image) => {
+      try {
+        const response = await axios({
+          url: image.url,
+          method: 'GET',
+          responseType: 'stream'
+        });
+
+        const writer = fs.createWriteStream(path.join(outputDir, image.filename));
+        response.data.pipe(writer);
+
+        return new Promise<void>((resolve, reject) => {
+          writer.on('finish', () => resolve());
+          writer.on('error', reject);
+        });
+      } catch (error) {
+        console.error(`Failed to download image ${image.url}:`, error);
+      }
+    });
+
+    await Promise.all(downloadPromises);
+    return images;
+  } catch (error) {
+    console.error('Error scraping images:', error);
+    throw error;
+  }
+}

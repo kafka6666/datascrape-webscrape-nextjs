@@ -7,7 +7,8 @@ import {scrapeAndStoreData} from "@/lib/actions";
 const isValidUrl = (url: string): boolean | undefined => {
    try {
        const parsedUrl = new URL(url) // this will throw an error if the url is invalid
-       // console.log(parsedUrl)
+       
+       // extract the hostname
        const hostname = parsedUrl.hostname
 
        // check if the hostname contains "https://", "www.", or ".com"
