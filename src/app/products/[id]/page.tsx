@@ -7,11 +7,15 @@ import {formatNumber} from "@/lib/utils";
 import PriceInfoCard from "@/components/PriceInfoCard";
 import ProductCard from "@/components/ProductCard";
 
-type ParamProps = {
-    params: {id: string}
+type Props = {
+    params: Promise<{ id: string }> | undefined
 }
 
-const ProductDetailsPage = async({params: {id}}: ParamProps) => {
+const ProductDetailsPage = async({ params }: Props) => {
+    if (!params) {
+        redirect('/404');
+    }
+    const { id } = await params;
     const dataFromDb: ProductType = await getDataById(id);
     if (!dataFromDb) {
         redirect('/404');
@@ -21,7 +25,6 @@ const ProductDetailsPage = async({params: {id}}: ParamProps) => {
     if (!similarData) {
         redirect('/404');
     }
-
 
     return (
         <div className="product-container">
